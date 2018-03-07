@@ -12,6 +12,10 @@ public class Player : MonoBehaviour
     float vertical;
     [SerializeField]float jump;
     bool grounded = false;
+    float horizontalMouse;
+
+    [SerializeField]GameObject camera;
+
 
     void Awake()
     {
@@ -20,16 +24,19 @@ public class Player : MonoBehaviour
 
 	void Update ()
     {
-        Debug.Log(grounded);
+
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
-
-        if(Input.GetKeyDown(KeyCode.Space) && grounded)
+        if (Input.GetKeyDown(KeyCode.Space) && grounded)
         {
             body.velocity = new Vector3(body.velocity.x, jump, body.velocity.z);
             grounded = false;
         }
-        direction = new Vector3(-vertical * speed, body.velocity.y, horizontal * speed);
+        direction = new Vector3(horizontal * speed, body.velocity.y, vertical * speed);
+        direction = camera.transform.TransformDirection(direction);
+        transform.localEulerAngles = new Vector3(0, camera.transform.eulerAngles.y, 0);
+
+        direction.y = 0.0f;
     }
 
     void FixedUpdate()
